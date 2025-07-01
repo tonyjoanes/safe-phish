@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    container_name: phishguardai-db
+    environment:
+      POSTGRES_DB: phishguardai
+      POSTGRES_USER: phishuser
+      POSTGRES_PASSWORD: phishpass123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - phishguardai-network
+
+  # .NET Core API
+  api:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: phishguardai-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Database=phishguardai;Username=phishuser;Password=phishpass123
+      - OpenAI__ApiKey=${OPENAI_API_KEY}
+      - Mailgun__ApiKey=${MAILGUN_API_KEY}
+      - Mailgun__Domain=${MAILGUN_DOMAIN}
+    ports:
+      - "5000:8080"
+    depends_on:
+      - db
+    networks:
+      - phishguardai-network
+
+  # React Frontend (Development)
+  frontend:
+    build:
+      context: ./frontend/phishguardai-dashboard
+      dockerfile: Dockerfile.dev
+    container_name: phishguardai-frontend
+    ports:
+      - "3000:5173"
+    volumes:
+      - ./frontend/phishguardai-dashboard:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5000
+      - VITE_FIREBASE_API_KEY=${FIREBASE_API_KEY}
+      - VITE_FIREBASE_AUTH_DOMAIN=${FIREBASE_AUTH_DOMAIN}
+      - VITE_FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+    networks:
+      - phishguardai-network
+
+volumes:
+  postgres_data:
+
+networks:
+  phishguardai-network:
+    driver: bridge 
