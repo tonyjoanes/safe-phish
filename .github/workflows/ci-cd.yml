@@ -36,13 +36,13 @@ jobs:
         dotnet-version: '8.0.x'
         
     - name: Restore dependencies
-      run: dotnet restore backend/PhishGuardAI.Api/PhishGuardAI.Api.csproj
+      run: dotnet restore PhishGuardAI.sln
       
     - name: Build
-      run: dotnet build backend/PhishGuardAI.Api/PhishGuardAI.Api.csproj --no-restore
+      run: dotnet build PhishGuardAI.sln --no-restore
       
     - name: Test
-      run: dotnet test backend/PhishGuardAI.Tests/PhishGuardAI.Tests.csproj --no-build --verbosity normal
+      run: dotnet test PhishGuardAI.sln --no-build --verbosity normal
       env:
         ConnectionStrings__DefaultConnection: "Host=localhost;Database=testdb;Username=testuser;Password=testpass"
 
