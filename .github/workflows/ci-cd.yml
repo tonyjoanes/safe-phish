@@ -75,39 +75,39 @@ jobs:
       env:
         VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
-  # Docker Build - Disabled for development phase
-  # docker-build:
-  #   name: Docker Build  
-  #   runs-on: ubuntu-latest
-  #   needs: [backend, frontend]
-  #   if: github.ref == 'refs/heads/main'
-  #   
-  #   steps:
-  #   - uses: actions/checkout@v4
-  #   
-  #   - name: Set up Docker Buildx
-  #     uses: docker/setup-buildx-action@v3
-  #     
-  #   - name: Login to Docker Hub
-  #     uses: docker/login-action@v3
-  #     with:
-  #       username: ${{ secrets.DOCKER_HUB_USERNAME }}
-  #       password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-  #       
-  #   - name: Build and push Backend
-  #     uses: docker/build-push-action@v5
-  #     with:
-  #       context: ./backend
-  #       push: true
-  #       tags: ${{ secrets.DOCKER_HUB_USERNAME }}/phishguardai-api:latest
-  #       
-  #   - name: Build and push Frontend
-  #     uses: docker/build-push-action@v5
-  #     with:
-  #       context: ./frontend/phishguardai-dashboard
-  #       file: ./frontend/phishguardai-dashboard/Dockerfile.prod
-  #       push: true
-  #       tags: ${{ secrets.DOCKER_HUB_USERNAME }}/phishguardai-frontend:latest
+  # Docker Build and Push to Docker Hub
+  docker-build:
+    name: Docker Build  
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+        
+    - name: Build and push Backend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./backend
+        push: true
+        tags: tonyjoanes/phishguardai-api:latest
+        
+    - name: Build and push Frontend
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend/phishguardai-dashboard
+        file: ./frontend/phishguardai-dashboard/Dockerfile.prod
+        push: true
+        tags: tonyjoanes/phishguardai-frontend:latest
 
   # Security Scan
   security:
