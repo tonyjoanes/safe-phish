@@ -1,235 +1,181 @@
-AI-Powered Phishing Simulation Tool
-Welcome to the AI-Powered Phishing Simulation Tool, a cybersecurity solution designed for small businesses to test and train employees against phishing attacks. Built by [YourCompany], this tool leverages AI to generate realistic phishing emails, tracks user interactions, and provides actionable reports to improve security awareness. This project uses C# (.NET Core), React, Docker, and OpenAI to deliver a scalable, low-cost solution (under $5,000) with rapid market validation (30-90 days).
-Project Overview
-Phishing attacks are a leading threat to small businesses, with a market demand for simulation tools projected to reach $183.85B by 2032 (7.2% CAGR) [Phishing Simulator Market]. Our tool addresses this by offering:
+﻿# 🛡️ PhishGuardAI
 
-AI-Generated Emails: Realistic phishing templates powered by OpenAI.
-Campaign Management: Easy-to-use dashboard for creating and tracking campaigns.
-Metrics & Reports: Detailed analytics and PDF reports to train employees.
-Scalability: Dockerized architecture for seamless deployment on AWS.
-Low Cost: ~$894 setup, ~$120/month ongoing.
+**AI-Powered Phishing Simulation & Security Awareness Platform**
 
-This README outlines the project setup and the components to be built to achieve a market-ready product.
-Features
+PhishGuardAI is a comprehensive cybersecurity solution that helps organizations test and improve their employees' security awareness through realistic phishing simulations powered by artificial intelligence.
 
-Backend (.NET Core): REST API for campaign management, email sending, and metrics tracking.
-Frontend (React): Responsive dashboard for login, campaign creation, and report viewing.
-AI Integration: OpenAI API for generating phishing email templates.
-Email Delivery: Mailgun for sending and tracking emails (opens, clicks).
-Authentication: Firebase for secure user login.
-Reports: jsPDF for generating PDF reports with metrics and training tips.
-Containerization: Docker for consistent development and deployment.
-CI/CD: GitHub Actions for automated testing and building.
+![Build Status](https://github.com/tonyjoanes/safe-phish/actions/workflows/ci-cd.yml/badge.svg)
+![Docker Hub](https://img.shields.io/badge/docker-ready-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-Prerequisites
+## ✨ Features
 
-Development Tools:
-.NET 8 SDK
-Node.js (v20)
-Docker Desktop
-Cursor IDE with C# Dev Kit, ESLint, Prettier, and Docker extensions
+- 🤖 **AI-Powered Email Generation** - Create realistic phishing emails using OpenAI
+- 📊 **Campaign Management** - Easy-to-use dashboard for creating and tracking campaigns
+- 📈 **Analytics & Reports** - Detailed metrics and PDF reports for training insights
+- 🔐 **Firebase Authentication** - Secure user login and management
+- 🐳 **Docker Ready** - Containerized for easy deployment anywhere
+- ⚡ **CI/CD Pipeline** - Automated testing, building, and Docker Hub publishing
 
+## 🚀 Quick Start
 
-Services:
-OpenAI API key (~$100/month)
-Mailgun account (~$15/month)
-Firebase project (free tier)
-AWS S3 for hosting (~$5/month)
+### Using Docker (Recommended)
 
+1. **Clone the repository:**
+   `ash
+   git clone https://github.com/tonyjoanes/safe-phish.git
+   cd safe-phish
+   `
 
-Optional:
-Carrd account for landing page ($19/year)
-Google Analytics for tracking (free)
+2. **Set up environment variables:**
+   `ash
+   cp env.template .env
+   # Edit .env with your API keys (Firebase, OpenAI, etc.)
+   `
 
+3. **Start the application:**
+   `ash
+   docker-compose up --build
+   `
 
+4. **Access the application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
+   - Database: PostgreSQL on localhost:5432
 
-Setup Instructions
+### Using Pre-built Docker Images
 
-Clone the Repository:
-git clone https://github.com/tonyjoanes/safe-phish
-cd PhishingTool
+You can also run the latest published images:
 
+`ash
+# Run the backend API
+docker run -p 5000:8080 tonyjoanes/phishguardai-api:latest
 
-Install Dependencies:
+# Run the frontend
+docker run -p 3000:80 tonyjoanes/phishguardai-frontend:latest
+`
 
-Backend: dotnet restore ./backend
-Frontend: cd ./frontend && npm install
-Database: docker pull postgres:latest
+## 🛠️ Development Setup
 
+### Prerequisites
 
-Configure Environment:
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Node.js v20+](https://nodejs.org/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-Create a .env file in /backend:OpenAIApiKey=your_openai_key
-MailgunApiKey=your_mailgun_key
-ConnectionStrings__DefaultConnection=Host=db;Database=phishing;Username=user;Password=password
+### Local Development
 
+1. **Backend (.NET Core):**
+   `ash
+   cd backend
+   dotnet restore
+   dotnet run --project PhishGuardAI.Api
+   `
 
-Set up Firebase Authentication in /frontend (see Firebase docs).
+2. **Frontend (React):**
+   `ash
+   cd frontend/phishguardai-dashboard
+   npm install
+   npm run dev
+   `
 
+3. **Database:**
+   `ash
+   docker run --name postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:latest
+   `
 
-Run Locally with Docker:
-docker-compose up --build
+## 🔧 Configuration
 
+### Required Environment Variables
 
-API: http://localhost:5000
-Frontend: http://localhost:3000
-Database: PostgreSQL on localhost:5432
+Create a .env file in the project root with:
 
+`ash
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 
-Run Tests:
-cd ./backend && dotnet test
+# API Configuration
+VITE_API_URL=http://localhost:5000
 
+# OpenAI Configuration (for AI features)
+OPENAI_API_KEY=your_openai_api_key
 
-Deploy to AWS:
+# Database Configuration
+ConnectionStrings__DefaultConnection=Host=localhost;Database=phishguardai;Username=postgres;Password=password
+`
 
-Push React build to S3: aws s3 sync ./frontend/build s3://your-bucket
-Deploy API with AWS Elastic Beanstalk or ECS (see /docs/deployment.md).
+## ��️ Architecture
 
+`
+PhishGuardAI/
+├── backend/                    # .NET Core 8 API
+│   ├── PhishGuardAI.Api/      # Main API project
+│   └── PhishGuardAI.Tests/    # Unit tests
+├── frontend/                   # React TypeScript frontend
+│   └── phishguardai-dashboard/ # Main dashboard app
+├── database/                   # PostgreSQL initialization
+├── docker-compose.yml         # Development environment
+└── .github/workflows/         # CI/CD pipeline
+`
 
+## 🧪 Testing
 
-What Needs to Be Built
-To achieve a market-ready phishing simulation tool, the following components must be developed within 6-8 weeks:
-1. Backend (.NET Core API)
+Run backend tests:
+`ash
+cd backend
+dotnet test
+`
 
-Tech: .NET 8, Entity Framework Core, PostgreSQL
-Tasks:
-Build REST API endpoints:
-POST /campaigns: Create a phishing campaign (template ID, recipients).
-GET /campaigns/{id}: Retrieve campaign details.
-POST /emails/send: Send phishing emails via Mailgun.
-GET /metrics/{campaignId}: Track opens and clicks.
+Run frontend tests:
+`ash
+cd frontend/phishguardai-dashboard
+npm test
+`
 
+## 🚀 Deployment
 
-Integrate OpenAI API for email template generation (prompt: “Generate a phishing email mimicking a Google password reset”).
-Implement database models: Campaign, Email, Metric.
-Add xUnit tests for all endpoints (e.g., campaign creation, email sending).
+The project includes automated CI/CD via GitHub Actions that:
 
+- ✅ Runs automated tests
+- ✅ Builds and lints the frontend
+- ✅ Performs security scanning
+- ✅ Builds and publishes Docker images to Docker Hub
 
-Cursor Prompt: “Generate a .NET Core API with Entity Framework for a phishing campaign manager.”
+Docker images are automatically published to:
+- 	onyjoanes/phishguardai-api:latest
+- 	onyjoanes/phishguardai-frontend:latest
 
-2. Frontend (React Dashboard)
+## 📚 Documentation
 
-Tech: React, TypeScript, Tailwind CSS, Chart.js, Firebase, jsPDF
-Tasks:
-Create components:
-Login: Firebase email/password authentication.
-Campaign Creator: Form to select templates and recipients.
-Dashboard: Visualize metrics (e.g., open/click rates) with Chart.js.
-Report Viewer: Download PDF reports with jsPDF (include 3 hardcoded tips, e.g., “Verify sender domains”).
+- 📋 [Project Specification](docs/PROJECT_SPECIFICATION.md) - Detailed development roadmap
+- 🚀 [Getting Started Guide](docs/GETTING_STARTED.md) - Step-by-step setup instructions
+- 🔧 API Documentation - Available at /swagger when running the backend
 
+## 🤝 Contributing
 
-Style with Tailwind CSS for responsiveness.
-Deploy to AWS S3 as a static site.
+1. Fork the repository
+2. Create a feature branch (git checkout -b feature/amazing-feature)
+3. Commit your changes (git commit -m 'Add some amazing feature')
+4. Push to the branch (git push origin feature/amazing-feature)
+5. Open a Pull Request
 
+## 📄 License
 
-Cursor Prompt: “Generate a React component for a phishing campaign dashboard with Chart.js and Tailwind.”
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-3. Email System
+## 🙋‍♂️ Support
 
-Tech: Mailgun API
-Tasks:
-Integrate Mailgun to send emails and track opens/clicks.
-Configure DKIM/SPF for deliverability.
-Create tracking URLs (e.g., https://yourapp.com/track?campaignId=123&email=employee@company.com).
-Test delivery with Gmail/Outlook.
+If you have any questions or need help getting started:
 
+- 📧 Email: support@phishguardai.com
+- 🐛 Issues: [GitHub Issues](https://github.com/tonyjoanes/safe-phish/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/tonyjoanes/safe-phish/discussions)
 
-Cursor Prompt: “Generate C# code for sending emails with Mailgun API.”
+---
 
-4. Docker Configuration
-
-Tech: Docker, Docker Compose
-Tasks:
-Create Dockerfile for:
-Backend (.NET Core API)
-Frontend (React app)
-
-
-Update docker-compose.yml (see repository) for local development.
-Test multi-container setup locally.
-
-
-Cursor Prompt: “Generate a Dockerfile for a .NET 8 API.”
-
-5. CI/CD Pipeline
-
-Tech: GitHub Actions
-Tasks:
-Create a workflow to:
-Run xUnit tests on push.
-Build Docker images.
-Deploy to AWS (optional).
-
-
-Ensure zero downtime during updates.
-
-
-Cursor Prompt: “Generate a GitHub Actions workflow for .NET Core testing and Docker build.”
-
-6. Market Validation
-
-Tech: Carrd, Google Forms, Google Analytics, LinkedIn Ads
-Tasks:
-Build a Carrd landing page with demo video (Loom), mock report (Canva), and sign-up form.
-Create a Google Form survey for phishing pain points and pricing ($50-$200/year).
-Add Google Analytics to track landing page visits.
-Run LinkedIn Ads ($100-$200) targeting small business owners.
-
-
-Goal: 200 sign-ups in 30 days for beta testing.
-
-7. Documentation
-
-Tech: GitHub Wiki, Notion
-Tasks:
-Create GitHub Wiki pages:
-Installation instructions.
-API usage guide.
-Troubleshooting.
-
-
-Set up Notion workspace for tasks, API docs, and validation results.
-
-
-Cursor Prompt: “Generate a GitHub Wiki for a phishing simulation tool.”
-
-8. Future Integrations
-
-Secure Coding Tutorials:
-Add links in the dashboard to promote tutorials (e.g., “Learn secure coding”).
-Reuse .NET 8 SDK and Cursor for Roslyn-based validation.
-
-
-Security NuGet Package:
-Embed branding in logs (e.g., “Powered by YourCompany”).
-Use same Firebase auth for user management.
-
-
-Unified Branding:
-Create a “YourCompany Cybersecurity Suite” landing page on AWS S3.
-
-
-
-Timeline
-
-Week 1-2: Set up workspace, validate market (200 sign-ups).
-Week 3-4: Build API with OpenAI/Mailgun integration.
-Week 5-6: Develop React frontend, test 10 dummy campaigns.
-Week 7-8: Beta test with 10 businesses, iterate.
-Week 9-12: Public launch, target 50 paid users.
-
-Contributing
-Contributions are welcome! Please:
-
-Fork the repository.
-Create a feature branch (git checkout -b feature/YourFeature).
-Commit changes (git commit -m 'Add YourFeature').
-Push to the branch (git push origin feature/YourFeature).
-Open a pull request.
-
-License
-Proprietary - © 2025 [YourCompany]. All rights reserved.
-Contact
-For support or inquiries, contact [YourCompany] at support@yourcompany.com or visit [YourCompany.com].
-
-Protect your business with smarter cybersecurity.
+**Made with ❤️ for cybersecurity awareness**
