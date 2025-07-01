@@ -5,7 +5,7 @@ import {
   signOut, 
   onAuthStateChanged
 } from 'firebase/auth';
-import type { User } from 'firebase/auth';
+import type { User, AuthError } from 'firebase/auth';
 import { auth } from '../firebase';
 
 const FirebaseTest = () => {
@@ -35,9 +35,10 @@ const FirebaseTest = () => {
       console.log('Sign up successful:', userCredential.user);
       setEmail('');
       setPassword('');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Sign up error:', err);
-      setError(`${err.code}: ${err.message}`);
+      const authError = err as AuthError;
+      setError(`${authError.code}: ${authError.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -55,9 +56,10 @@ const FirebaseTest = () => {
       console.log('Sign in successful:', userCredential.user);
       setEmail('');
       setPassword('');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Sign in error:', err);
-      setError(`${err.code}: ${err.message}`);
+      const authError = err as AuthError;
+      setError(`${authError.code}: ${authError.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -66,8 +68,9 @@ const FirebaseTest = () => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const authError = err as AuthError;
+      setError(authError.message);
     }
   };
 
